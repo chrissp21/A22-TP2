@@ -17,6 +17,8 @@ public class CalculatriceApp extends Application {
         primaryStage.setMinWidth(1050);
         primaryStage.setMinHeight(500);
         primaryStage.show();
+
+
     }
 
     public static void main(String[] args) {
