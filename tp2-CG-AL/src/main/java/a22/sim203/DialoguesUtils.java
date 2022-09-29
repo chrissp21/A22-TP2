@@ -1,7 +1,6 @@
 package a22.sim203;
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 
 public class DialoguesUtils {

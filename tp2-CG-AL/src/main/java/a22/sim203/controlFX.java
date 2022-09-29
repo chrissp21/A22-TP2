@@ -4,9 +4,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class controlFX {
 
@@ -15,6 +24,8 @@ public class controlFX {
     private String memoire;
     private ContextMenu contextMenu;
     private final DialoguesUtils d = new DialoguesUtils();
+    private final List validKeys = new ArrayList(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "=", ",", "(", ")", "BACK_SPACE", "DELETE"));
+    private List<Button> buttons;
 
     @FXML
     private Label affichage;
@@ -24,41 +35,141 @@ public class controlFX {
     private ListView fonctions;
     @FXML
     private CheckMenuItem modeChangementFonction;
+    @FXML
+    private BorderPane borderPane;
+    @FXML
+    private GridPane gridPane;
 
     public void initialize() {
+        buttons = new ArrayList(Arrays.asList(gridPane.getChildren().toArray()));
+        buttons.remove(buttons.size() - 1);
+
         fonctions.getItems().addAll(new Function("f(x)=x").getFunctionExpressionString(), new Function("f(x)=sqrt(x)").getFunctionExpressionString(), new Function("f(x)=sin(x)").getFunctionExpressionString(), new Function("f(x)=cos(x)").getFunctionExpressionString(), new Function("f(x)=x^2").getFunctionExpressionString());
 
         historique.setOnMouseClicked(e -> {
             int index = historique.getSelectionModel().getSelectedIndex();
-            if (e.getButton().equals(MouseButton.PRIMARY)) {
-                if (e.getClickCount() == 2) {
-                    if (affichage.getText().equals("Affichage"))
-                        affichage.setText(historique.getItems().get(index).toString());
-                    else {
-                        String temp = affichage.getText();
-                        affichage.setText(temp + historique.getItems().get(index).toString());
-                    }
-                }
+            if (checkDoubleClick(e)) {
+                String texte = historique.getItems().get(index).toString();
+                int indexOfEqual = texte.indexOf('=');
+
+                afficheTexte(texte.substring(indexOfEqual + 2));
             }
         });
 
         fonctions.setOnMouseClicked(e -> {
             int index = fonctions.getSelectionModel().getSelectedIndex();
-            if (e.getButton().equals(MouseButton.PRIMARY)) {
-                if (e.getClickCount() == 2) {
-                    Function function = new Function("f(x)=" + fonctions.getItems().get(index).toString());
-                    calculateAndShow(function);
-                }
+            if (checkDoubleClick(e)) {
+                Function function = new Function("f(x)=" + fonctions.getItems().get(index).toString());
+                calculateAndShow(function);
             }
         });
+        borderPane.setOnKeyPressed(this::keyPressedEvent);
+        borderPane.setOnKeyReleased(this::keyReleasedEvent);
 
+        addButtonPressReleaseListener();
+    }
+
+    private void afficheTexte(String texte) {
+        if (affichage.getText().equals("Affichage"))
+            affichage.setText(texte);
+        else {
+            String temp = affichage.getText();
+            affichage.setText(temp + texte);
+        }
+    }
+
+    private void keyPressedEvent(KeyEvent e) {
+        String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
+
+        if (checkValidKey(keyName)) {
+            changeButtonScale(findButton(keyName), 0.80);
+
+            if (keyName.equals("BACK_SPACE")) erase((new ActionEvent()));
+            else if (keyName.equals("DELETE")) delete(new ActionEvent());
+            else if (keyName.equals("=")) calcul(new ActionEvent());
+            else afficheTexte(e.getText());
+        }
+    }
+
+    private void keyReleasedEvent(KeyEvent e) {
+        String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
+
+        if (checkValidKey(keyName)) {
+            changeButtonScale(findButton(keyName), 1.25);
+        }
+    }
+
+    private void addButtonPressReleaseListener() {
+        for (Button button : buttons) {
+            if (!button.getText().equals("no FX")) button.pressedProperty().addListener((observable, wasPressed, pressed) -> {
+                if (pressed) {
+                    changeButtonScale(button, 0.80);
+                } else changeButtonScale(button, 1.25);
+            });
+        }
+    }
+
+    private void changeButtonScale(Button button, Double scale) {
+        button.setScaleX(button.getScaleX() * scale);
+        button.setScaleY(button.getScaleY() * scale);
+    }
+
+    private Button findButton(String text) {
+        Button buttonReturn = null;
+        for (Button button : buttons) {
+            if (text.equals(button.getId())) {
+                buttonReturn = button;
+                break;
+            }
+        }
+        return buttonReturn;
+    }
+
+    private boolean checkValidKey(String key) {
+        return validKeys.contains(key);
+    }
+
+    private boolean checkDoubleClick(MouseEvent event) {
+        return event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2;
+    }
+
+    @FXML
+    void sqrt(ActionEvent event) {
+        Function function = new Function("f(x)=sqrt(x)");
+        try {
+            double value = Double.parseDouble(affichage.getText());
+            double calcul = function.calculate(value);
+            if (Double.isNaN(calcul)) d.getCalculInvalide();
+            else {
+                affichage.setText(String.valueOf(calcul));
+                historique.getItems().add("sqrt(" + (int) value + ")=" + calcul);
+            }
+        } catch (NumberFormatException e) {
+            d.getCalculInvalide();
+        }
+    }
+
+    @FXML
+    void exp(ActionEvent event) {
+        Function function = new Function("f(x)=exp(x)");
+        try {
+            double value = Double.parseDouble(affichage.getText());
+            double calcul = function.calculate(value);
+            if (Double.isNaN(calcul)) d.getCalculInvalide();
+            else {
+                affichage.setText(String.valueOf(calcul));
+                historique.getItems().add("exp(" + (int) value + ")=" + calcul);
+            }
+        } catch (NumberFormatException e) {
+            d.getCalculInvalide();
+        }
     }
 
     @FXML
     void calculerBoutonFx(ActionEvent event) {
         if (modeChangementFonction.isSelected()) {
             String newText = (String) fonctions.getSelectionModel().getSelectedItem();
-            ((Button)(event.getSource())).setText(newText);
+            ((Button) (event.getSource())).setText(newText);
         } else {
             String buttonText = ((Button) (event.getSource())).getText();
             if (!buttonText.equals("no FX")) {
@@ -76,6 +187,7 @@ public class controlFX {
         }
     }
 
+
     @FXML
     void ajouteMemoire(ActionEvent event) {
         memoire = affichage.getText();
@@ -83,8 +195,11 @@ public class controlFX {
 
     @FXML
     void retourneMemoire(ActionEvent event) {
-        String temp = affichage.getText();
-        affichage.setText(temp + memoire);
+        if (affichage.getText().equals("Affichage")) affichage.setText(memoire);
+        else {
+            String temp = affichage.getText();
+            affichage.setText(temp + memoire);
+        }
     }
 
     @FXML
