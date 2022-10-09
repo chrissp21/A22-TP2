@@ -154,7 +154,7 @@
                <GridPane.margin>
                   <Insets bottom="2.0" left="4.0" top="4.0" />
                </GridPane.margin></Button>
-            <Button layoutX="177.0" layoutY="79.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="40.0" prefWidth="110.0" text="+/-" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+            <Button layoutX="177.0" layoutY="79.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#changeSign" prefHeight="40.0" prefWidth="110.0" text="+/-" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
                <GridPane.margin>
                   <Insets bottom="2.0" left="4.0" top="4.0" />
                </GridPane.margin></Button>

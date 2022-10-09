@@ -48,7 +48,7 @@ public class DialoguesUtils {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Calculateur avancé");
         alert.setHeaderText("Sim 203");
-        alert.setContentText("Cours de programmation 203 en sim\nCégep Limoilou A22\npar:Christophe Guérin et Vincent Fortier");
+        alert.setContentText("Cours de programmation 203 en sim\nCégep Limoilou A22\npar: Christophe Guérin et Adam Lidam");
         alert.show();
     }
 }

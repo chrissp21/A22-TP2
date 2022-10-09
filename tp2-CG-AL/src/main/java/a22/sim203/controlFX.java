@@ -40,6 +40,7 @@ public class controlFX {
     @FXML
     private GridPane gridPane;
 
+
     public void initialize() {
         buttons = new ArrayList(Arrays.asList(gridPane.getChildren().toArray()));
         buttons.remove(buttons.size() - 1);
@@ -78,16 +79,29 @@ public class controlFX {
         }
     }
 
+    @FXML
+    private void changeSign(ActionEvent event) {
+        if (!Objects.equals(affichage.getText(), "Affichage")) {
+            try {
+                double doubleAffichage = Double.parseDouble(affichage.getText());
+                affichage.setText("-" + doubleAffichage);
+            } catch (NumberFormatException e) {
+                affichage.setText(affichage.getText() + "-");
+            }
+        }
+    }
+
     private void keyPressedEvent(KeyEvent e) {
         String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
-
         if (checkValidKey(keyName)) {
             changeButtonScale(findButton(keyName), 0.80);
 
-            if (keyName.equals("BACK_SPACE")) erase((new ActionEvent()));
-            else if (keyName.equals("DELETE")) delete(new ActionEvent());
-            else if (keyName.equals("=")) calcul(new ActionEvent());
-            else afficheTexte(e.getText());
+            switch (keyName) {
+                case "BACK_SPACE" -> erase((new ActionEvent()));
+                case "DELETE" -> delete(new ActionEvent());
+                case "=" -> calcul(new ActionEvent());
+                default -> afficheTexte(e.getText());
+            }
         }
     }
 
@@ -101,11 +115,12 @@ public class controlFX {
 
     private void addButtonPressReleaseListener() {
         for (Button button : buttons) {
-            if (!button.getText().equals("no FX")) button.pressedProperty().addListener((observable, wasPressed, pressed) -> {
-                if (pressed) {
-                    changeButtonScale(button, 0.80);
-                } else changeButtonScale(button, 1.25);
-            });
+            if (!button.getText().equals("no FX"))
+                button.pressedProperty().addListener((observable, wasPressed, pressed) -> {
+                    if (pressed) {
+                        changeButtonScale(button, 0.80);
+                    } else changeButtonScale(button, 1.25);
+                });
         }
     }
 
