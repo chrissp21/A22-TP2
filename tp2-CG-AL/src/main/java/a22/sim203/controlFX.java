@@ -9,6 +9,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 
@@ -71,9 +72,10 @@ public class controlFX {
     }
 
     private void afficheTexte(String texte) {
-        if (affichage.getText().equals("Affichage"))
+        affichage.setTextFill(Color.DARKGREEN);
+        if (affichage.getText().equals("Affichage")) {
             affichage.setText(texte);
-        else {
+        } else {
             String temp = affichage.getText();
             affichage.setText(temp + texte);
         }
@@ -82,6 +84,7 @@ public class controlFX {
     @FXML
     private void changeSign(ActionEvent event) {
         if (!Objects.equals(affichage.getText(), "Affichage")) {
+            affichage.setTextFill(Color.DARKGREEN);
             try {
                 double doubleAffichage = Double.parseDouble(affichage.getText());
                 affichage.setText("-" + doubleAffichage);
@@ -157,6 +160,7 @@ public class controlFX {
             if (Double.isNaN(calcul)) d.getCalculInvalide();
             else {
                 affichage.setText(String.valueOf(calcul));
+                affichage.setTextFill(Color.DARKGREEN);
                 historique.getItems().add("sqrt(" + (int) value + ")=" + calcul);
             }
         } catch (NumberFormatException e) {
@@ -173,6 +177,7 @@ public class controlFX {
             if (Double.isNaN(calcul)) d.getCalculInvalide();
             else {
                 affichage.setText(String.valueOf(calcul));
+                affichage.setTextFill(Color.DARKGREEN);
                 historique.getItems().add("exp(" + (int) value + ")=" + calcul);
             }
         } catch (NumberFormatException e) {
@@ -195,8 +200,10 @@ public class controlFX {
 
     @FXML
     void addTextAffichage(ActionEvent event) {
-        if (affichage.getText().equals("Affichage")) affichage.setText(((Button) event.getSource()).getText());
-        else {
+        affichage.setTextFill(Color.DARKGREEN);
+        if (affichage.getText().equals("Affichage")) {
+            affichage.setText(((Button) event.getSource()).getText());
+        } else {
             String temp = affichage.getText();
             affichage.setText(temp + ((Button) event.getSource()).getText());
         }
@@ -210,8 +217,11 @@ public class controlFX {
 
     @FXML
     void retourneMemoire(ActionEvent event) {
-        if (affichage.getText().equals("Affichage")) affichage.setText(memoire);
-        else {
+        if (affichage.getText().equals("Affichage")) {
+            affichage.setTextFill(Color.DARKGREEN);
+            affichage.setText(memoire);
+        } else {
+            affichage.setTextFill(Color.DARKGREEN);
             String temp = affichage.getText();
             affichage.setText(temp + memoire);
         }
@@ -228,6 +238,7 @@ public class controlFX {
                 tempCalcul = Double.toString(expression.calculate());
                 addHistorique(tempExpression, tempCalcul);
                 affichage.setText(Double.toString(expression.calculate()));
+                affichage.setTextFill(Color.DARKGREEN);
             }
         }
     }
@@ -236,13 +247,19 @@ public class controlFX {
     void erase(ActionEvent event) {
         assert affichage.getText() != null;
         String s = affichage.getText();
-        if (s.length() == 1) affichage.setText("Affichage");
-        else if (!s.equals("Affichage")) affichage.setText(s.substring(0, s.length() - 1));
+        if (s.length() == 1) {
+            affichage.setText("Affichage");
+            affichage.setTextFill(Color.WHITE);
+        } else if (!s.equals("Affichage")) {
+            affichage.setText(s.substring(0, s.length() - 1));
+            affichage.setTextFill(Color.DARKGREEN);
+        }
     }
 
     @FXML
     void delete(ActionEvent event) {
         affichage.setText("Affichage");
+        affichage.setTextFill(Color.WHITE);
     }
 
     private void addHistorique(String expression, String calcul) {
@@ -297,6 +314,7 @@ public class controlFX {
             calcul = (function.calculate(value));
             if (!Double.isNaN(calcul)) {
                 affichage.setText(String.valueOf(calcul));
+                affichage.setTextFill(Color.DARKGREEN);
                 CharSequence old = "x";
                 CharSequence replacement = String.valueOf((int) value);
                 historique.getItems().add(function.getFunctionExpressionString().replace(old, replacement) + "=" + calcul);
