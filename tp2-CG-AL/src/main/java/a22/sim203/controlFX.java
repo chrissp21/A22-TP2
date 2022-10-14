@@ -47,7 +47,7 @@ public class controlFX {
     @FXML
     private ListView historique;
     /**
-     * List view de gauche ayant les fonction de bases et celles ajouté en memoire
+     * List view de gauche ayant les fonctions de bases et celles ajouté en memoire
      */
     @FXML
     private ListView fonctions;
@@ -67,10 +67,8 @@ public class controlFX {
     @FXML
     private GridPane gridPane;
 
-    private int keyPressed = 0;
-
     /**
-     *initialise toute la propriété de la scène
+     * initialise toute la propriété de la scène
      */
     public void initialize() {
 
@@ -78,7 +76,7 @@ public class controlFX {
         buttons = new ArrayList(Arrays.asList(gridPane.getChildren().toArray()));
         buttons.remove(buttons.size() - 1);
 
-        //ajout des fonction de base dans la listview de gauche
+        //ajout des fonctions de base dans la listview de gauche
         fonctions.getItems().addAll(new Function("f(x)=x").getFunctionExpressionString(), new Function("f(x)=sqrt(x)").getFunctionExpressionString(), new Function("f(x)=sin(x)").getFunctionExpressionString(), new Function("f(x)=cos(x)").getFunctionExpressionString(), new Function("f(x)=x^2").getFunctionExpressionString());
 
         //ajout d'un handler lors du mouseclick sur la list view historique
@@ -109,7 +107,8 @@ public class controlFX {
     }
 
     /**
-     *Ajoute le texte au label affichage
+     * Ajoute le texte au label affichage
+     *
      * @param texte le texte a ajouté
      */
     private void afficheTexte(String texte) {
@@ -121,9 +120,9 @@ public class controlFX {
             affichage.setText(temp + texte);
         }
     }
+
     /**
      * Handler de la touche qui change le signe
-     *
      */
     @FXML
     private void changeSign(ActionEvent event) {
@@ -137,26 +136,35 @@ public class controlFX {
             }
         }
     }
+
     /**
      * Handle une touche appuyée
-     * @param e l evenement de la touche appuyée
+     *
+     * @param e l'évènement de la touche appuyée
      */
+
+
     private void keyPressedEvent(KeyEvent e) {
         String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
         if (checkValidKey(keyName)) {
-            changeButtonScale(findButton(keyName), 0.80);
 
-            switch (keyName) {
-                case "BACK_SPACE" -> erase((new ActionEvent()));
-                case "DELETE" -> delete(new ActionEvent());
-                case "=" -> calcul(new ActionEvent());
-                default -> afficheTexte(e.getText());
+            if (findButton(keyName).getScaleX() != 0.80) {
+                changeButtonScale(findButton(keyName), 0.80);
+
+                switch (keyName) {
+                    case "BACK_SPACE" -> erase((new ActionEvent()));
+                    case "DELETE" -> delete(new ActionEvent());
+                    case "=" -> calcul(new ActionEvent());
+                    default -> afficheTexte(e.getText());
+                }
             }
         }
     }
+
     /**
      * Handle une touche relâchée
-     * @param e l'evenment de la touche relâchée
+     *
+     * @param e l'événement de la touche relâchée
      */
     private void keyReleasedEvent(KeyEvent e) {
         String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
@@ -180,17 +188,21 @@ public class controlFX {
                 });
         }
     }
+
     /**
      * effectue le changement de taille sur un bouton
-     * @param button le boutons a modifier
-     * @param scale le multiplicateur de taille
+     *
+     * @param button le bouton à modifier
+     * @param scale  le multiplicateur de taille
      */
     private void changeButtonScale(Button button, Double scale) {
         button.setScaleX(button.getScaleX() * scale);
         button.setScaleY(button.getScaleY() * scale);
     }
+
     /**
-     * trouve de bouton rechecher a partir de ton texte
+     * trouve le bouton recherché à partir de ton texte
+     *
      * @param text le texte du bouton rechercher
      */
     private Button findButton(String text) {
@@ -203,20 +215,25 @@ public class controlFX {
         }
         return buttonReturn;
     }
+
     /**
      * verified si texte du bouton est valide
+     *
      * @param key le texte de la touche vérifié
      */
     private boolean checkValidKey(String key) {
         return validKeys.contains(key);
     }
+
     /**
      * Vérifie si le click a été effectué 2 fois
-     * @param event l'evenement de la souris vérifié
+     *
+     * @param event l'évènement de la souris vérifiée
      */
     private boolean checkDoubleClick(MouseEvent event) {
         return event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2;
     }
+
     /**
      * Handler de la touche sqrt permettant de faire la racine carré du nombre dans l'affichage
      */
@@ -236,6 +253,7 @@ public class controlFX {
             d.getCalculInvalide();
         }
     }
+
     /**
      * Handler de la touche exp permettant de faire l'exposant du nombre dans l'affichage
      */
@@ -255,9 +273,11 @@ public class controlFX {
             d.getCalculInvalide();
         }
     }
+
     /**
-     * Effectue la methode personalisée sur le nombre dans l'affichage ou personalise une touche depuis la methode sélectionné dans la listview
-     * @param event l'event analysé
+     * Effectue la methode personalise sur le nombre dans l'affichage ou personalise une touche depuis la methode sélectionné dans la listview
+     *
+     * @param event l'évènement analysé
      */
     @FXML
     void calculerBoutonFx(ActionEvent event) {
@@ -271,9 +291,11 @@ public class controlFX {
             }
         }
     }
+
     /**
      * Ajoute la methode d'un bouton à l'affichage
-     * @param event L'event analysé
+     *
+     * @param event L'évènement analysé
      */
     @FXML
     void addTextAffichage(ActionEvent event) {
@@ -293,6 +315,7 @@ public class controlFX {
     void ajouteMemoire(ActionEvent event) {
         memoire = affichage.getText();
     }
+
     /**
      * Ajout l'élément de la memoire de la mémoire dans l'affichage
      */
@@ -307,6 +330,7 @@ public class controlFX {
             affichage.setText(temp + memoire);
         }
     }
+
     /**
      *
      */
@@ -325,6 +349,7 @@ public class controlFX {
             }
         }
     }
+
     /**
      *
      */
@@ -340,6 +365,7 @@ public class controlFX {
             affichage.setTextFill(Color.DARKGREEN);
         }
     }
+
     /**
      *
      */
@@ -348,12 +374,14 @@ public class controlFX {
         affichage.setText("Affichage");
         affichage.setTextFill(Color.WHITE);
     }
+
     /**
      *
      */
     private void addHistorique(String expression, String calcul) {
         historique.getItems().add(expression + " = " + calcul);
     }
+
     /**
      *
      */
@@ -387,6 +415,7 @@ public class controlFX {
         contextMenu.getItems().addAll(ajouter, effacer, modifier);
         contextMenu.show(fonctions, event.getScreenX(), event.getScreenY());
     }
+
     /**
      *
      */
