@@ -2,12 +2,18 @@ package a22.sim203;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
-
+/**
+ *
+ */
 public class DialoguesUtils {
-
+    /**
+     *
+     */
     public DialoguesUtils() {
     }
-
+    /**
+     *
+     */
     public String getAjouterFonction() {
         TextInputDialog textInputDialog = new TextInputDialog();
         textInputDialog.setTitle("Calculateur avancé");
@@ -17,7 +23,9 @@ public class DialoguesUtils {
 
         return textInputDialog.getEditor().getText();
     }
-
+    /**
+     *
+     */
     public String getModifierFonction(String string) {
         TextInputDialog textInputDialog = new TextInputDialog(string);
         textInputDialog.setTitle("Calculateur avancé");
@@ -27,7 +35,9 @@ public class DialoguesUtils {
 
         return textInputDialog.getEditor().getText();
     }
-
+    /**
+     *
+     */
     public void getCalculInvalide() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText("Expression invalide");
@@ -35,7 +45,9 @@ public class DialoguesUtils {
         alert.setContentText("L'expression saisie ne peut être calculée");
         alert.show();
     }
-
+    /**
+     *
+     */
     public void getFonctionInvalide(){
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Calculateur avancé");
@@ -43,7 +55,9 @@ public class DialoguesUtils {
         alert.setContentText("La fonction utilisée ne peut être calculée");
         alert.show();
     }
-
+    /**
+     *
+     */
     public void getAPropos(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Calculateur avancé");

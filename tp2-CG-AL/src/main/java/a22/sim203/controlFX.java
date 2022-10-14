@@ -20,34 +20,66 @@ import java.util.Objects;
 
 public class controlFX {
 
-    private String tempExpression;
-    private String tempCalcul;
+    /**
+     * La string garder en memoire du label affichage
+     */
     private String memoire;
-    private ContextMenu contextMenu;
+    /**
+     * Creation de la class créatrice de dialogue
+     */
     private final DialoguesUtils d = new DialoguesUtils();
+    /**
+     * List des boutons du clavier utilisable
+     */
     private final List validKeys = new ArrayList(Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+", "-", "*", "/", "=", ",", "(", ")", "BACK_SPACE", "DELETE"));
+    /**
+     * List des boutons dans l'affichage gridpane
+     */
     private List<Button> buttons;
-
+    /**
+     * Label de l'affichage géré par le dossier fxml
+     */
     @FXML
     private Label affichage;
+    /**
+     * List view de droit gardant en memoire les calculs effectués
+     */
     @FXML
     private ListView historique;
+    /**
+     * List view de gauche ayant les fonction de bases et celles ajouté en memoire
+     */
     @FXML
     private ListView fonctions;
+    /**
+     * CheckMenu activant l'ajout de fonction
+     */
     @FXML
     private CheckMenuItem modeChangementFonction;
+    /**
+     * borderPane principale
+     */
     @FXML
     private BorderPane borderPane;
+    /**
+     * gridPane au centre de la borderPane
+     */
     @FXML
     private GridPane gridPane;
 
-
+    /**
+     *initialise toute la propriété de la scène
+     */
     public void initialize() {
+
+        //ajout des boutons de la gridpane dans le list de boutons
         buttons = new ArrayList(Arrays.asList(gridPane.getChildren().toArray()));
         buttons.remove(buttons.size() - 1);
 
+        //ajout des fonction de base dans la listview de gauche
         fonctions.getItems().addAll(new Function("f(x)=x").getFunctionExpressionString(), new Function("f(x)=sqrt(x)").getFunctionExpressionString(), new Function("f(x)=sin(x)").getFunctionExpressionString(), new Function("f(x)=cos(x)").getFunctionExpressionString(), new Function("f(x)=x^2").getFunctionExpressionString());
 
+        //ajout d'un handler lors du mouseclick sur la list view historique
         historique.setOnMouseClicked(e -> {
             int index = historique.getSelectionModel().getSelectedIndex();
             if (checkDoubleClick(e)) {
@@ -58,6 +90,7 @@ public class controlFX {
             }
         });
 
+        //ajout d'un handler lors d'un mouseClick sur la listview des fonctions
         fonctions.setOnMouseClicked(e -> {
             int index = fonctions.getSelectionModel().getSelectedIndex();
             if (checkDoubleClick(e)) {
@@ -65,12 +98,18 @@ public class controlFX {
                 calculateAndShow(function);
             }
         });
+
+        //ajout de handler sur la borderpane lors d'une touche du clavier et pressed et released
         borderPane.setOnKeyPressed(this::keyPressedEvent);
         borderPane.setOnKeyReleased(this::keyReleasedEvent);
 
         addButtonPressReleaseListener();
     }
 
+    /**
+     *Ajoute le texte au label affichage
+     * @param texte le texte a ajouté
+     */
     private void afficheTexte(String texte) {
         affichage.setTextFill(Color.DARKGREEN);
         if (affichage.getText().equals("Affichage")) {
@@ -80,7 +119,10 @@ public class controlFX {
             affichage.setText(temp + texte);
         }
     }
-
+    /**
+     * Handler de la touche qui change le signe
+     *
+     */
     @FXML
     private void changeSign(ActionEvent event) {
         if (!Objects.equals(affichage.getText(), "Affichage")) {
@@ -93,7 +135,10 @@ public class controlFX {
             }
         }
     }
-
+    /**
+     * Handle une touche appuyée
+     * @param e l evenement de la touche appuyée
+     */
     private void keyPressedEvent(KeyEvent e) {
         String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
         if (checkValidKey(keyName)) {
@@ -107,7 +152,10 @@ public class controlFX {
             }
         }
     }
-
+    /**
+     * Handle une touche relâchée
+     * @param e l'evenment de la touche relâchée
+     */
     private void keyReleasedEvent(KeyEvent e) {
         String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
 
@@ -115,7 +163,9 @@ public class controlFX {
             changeButtonScale(findButton(keyName), 1.25);
         }
     }
-
+    /**
+     * Ajoute le handle pour changement de taille sur l'appuie et le relâchement des boutons no Fx
+     */
     private void addButtonPressReleaseListener() {
         for (Button button : buttons) {
             if (!button.getText().equals("no FX"))
@@ -126,12 +176,19 @@ public class controlFX {
                 });
         }
     }
-
+    /**
+     * effectue le changement de taille sur un bouton
+     * @param button le boutons a modifier
+     * @param scale le multiplicateur de taille
+     */
     private void changeButtonScale(Button button, Double scale) {
         button.setScaleX(button.getScaleX() * scale);
         button.setScaleY(button.getScaleY() * scale);
     }
-
+    /**
+     * trouve de bouton rechecher a partir de ton texte
+     * @param text le texte du bouton rechercher
+     */
     private Button findButton(String text) {
         Button buttonReturn = null;
         for (Button button : buttons) {
@@ -142,15 +199,23 @@ public class controlFX {
         }
         return buttonReturn;
     }
-
+    /**
+     * verified si texte du bouton est valide
+     * @param key le texte de la touche vérifié
+     */
     private boolean checkValidKey(String key) {
         return validKeys.contains(key);
     }
-
+    /**
+     * Vérifie si le click a été effectué 2 fois
+     * @param event l'evenement de la souris vérifié
+     */
     private boolean checkDoubleClick(MouseEvent event) {
         return event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2;
     }
-
+    /**
+     * Handler de la touche sqrt permettant de faire la racine carré du nombre dans l'affichage
+     */
     @FXML
     void sqrt(ActionEvent event) {
         Function function = new Function("f(x)=sqrt(x)");
@@ -167,7 +232,9 @@ public class controlFX {
             d.getCalculInvalide();
         }
     }
-
+    /**
+     * Handler de la touche exp permettant de faire l'exposant du nombre dans l'affichage
+     */
     @FXML
     void exp(ActionEvent event) {
         Function function = new Function("f(x)=exp(x)");
@@ -184,7 +251,9 @@ public class controlFX {
             d.getCalculInvalide();
         }
     }
-
+    /**
+     * Effectue la methode personalisée sur le nombre dans l'affichage ou effectue
+     */
     @FXML
     void calculerBoutonFx(ActionEvent event) {
         if (modeChangementFonction.isSelected()) {
@@ -197,7 +266,9 @@ public class controlFX {
             }
         }
     }
-
+    /**
+     *
+     */
     @FXML
     void addTextAffichage(ActionEvent event) {
         affichage.setTextFill(Color.DARKGREEN);
@@ -209,12 +280,16 @@ public class controlFX {
         }
     }
 
-
+    /**
+     *
+     */
     @FXML
     void ajouteMemoire(ActionEvent event) {
         memoire = affichage.getText();
     }
-
+    /**
+     *
+     */
     @FXML
     void retourneMemoire(ActionEvent event) {
         if (affichage.getText().equals("Affichage")) {
@@ -226,7 +301,9 @@ public class controlFX {
             affichage.setText(temp + memoire);
         }
     }
-
+    /**
+     *
+     */
     @FXML
     void calcul(ActionEvent event) {
         if (!affichage.getText().equals("Affichage")) {
@@ -234,15 +311,23 @@ public class controlFX {
             expression.setExpressionString(affichage.getText());
             if (Double.isNaN(expression.calculate())) d.getCalculInvalide();
             else {
-                tempExpression = affichage.getText();
-                tempCalcul = Double.toString(expression.calculate());
+                /**
+                 *
+                 */
+                String tempExpression = affichage.getText();
+                /**
+                 *
+                 */
+                String tempCalcul = Double.toString(expression.calculate());
                 addHistorique(tempExpression, tempCalcul);
                 affichage.setText(Double.toString(expression.calculate()));
                 affichage.setTextFill(Color.DARKGREEN);
             }
         }
     }
-
+    /**
+     *
+     */
     @FXML
     void erase(ActionEvent event) {
         assert affichage.getText() != null;
@@ -255,21 +340,30 @@ public class controlFX {
             affichage.setTextFill(Color.DARKGREEN);
         }
     }
-
+    /**
+     *
+     */
     @FXML
     void delete(ActionEvent event) {
         affichage.setText("Affichage");
         affichage.setTextFill(Color.WHITE);
     }
-
+    /**
+     *
+     */
     private void addHistorique(String expression, String calcul) {
         historique.getItems().add(expression + " = " + calcul);
     }
-
+    /**
+     *
+     */
     @FXML
     void fonctionMenu(ContextMenuEvent event) {
         int index = fonctions.getSelectionModel().getSelectedIndex();
-        contextMenu = new ContextMenu();
+        /**
+         *
+         */
+        ContextMenu contextMenu = new ContextMenu();
         MenuItem ajouter = new MenuItem("ajouter");
         MenuItem effacer = new MenuItem("effacer");
         MenuItem modifier = new MenuItem("modifier");
@@ -295,12 +389,16 @@ public class controlFX {
         contextMenu.getItems().addAll(ajouter, effacer, modifier);
         contextMenu.show(fonctions, event.getScreenX(), event.getScreenY());
     }
-
+    /**
+     *
+     */
     private Function stringToFunction(String s) {
         return new Function("f(x)=" + s);
     }
 
-
+    /**
+     *
+     */
     @FXML
     void menuAlert(ActionEvent event) {
         d.getAPropos();
