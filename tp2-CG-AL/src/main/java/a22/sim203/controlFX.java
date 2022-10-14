@@ -67,6 +67,8 @@ public class controlFX {
     @FXML
     private GridPane gridPane;
 
+    private int keyPressed = 0;
+
     /**
      *initialise toute la propriété de la scène
      */
@@ -163,8 +165,10 @@ public class controlFX {
             changeButtonScale(findButton(keyName), 1.25);
         }
     }
+
+
     /**
-     * Ajoute le handle pour changement de taille sur l'appuie et le relâchement des boutons no Fx
+     * Ajoute le handle pour changement de taille sur l'appuie et le relâchement des boutons du a un click
      */
     private void addButtonPressReleaseListener() {
         for (Button button : buttons) {
@@ -252,7 +256,8 @@ public class controlFX {
         }
     }
     /**
-     * Effectue la methode personalisée sur le nombre dans l'affichage ou effectue
+     * Effectue la methode personalisée sur le nombre dans l'affichage ou personalise une touche depuis la methode sélectionné dans la listview
+     * @param event l'event analysé
      */
     @FXML
     void calculerBoutonFx(ActionEvent event) {
@@ -267,7 +272,8 @@ public class controlFX {
         }
     }
     /**
-     *
+     * Ajoute la methode d'un bouton à l'affichage
+     * @param event L'event analysé
      */
     @FXML
     void addTextAffichage(ActionEvent event) {
@@ -281,14 +287,14 @@ public class controlFX {
     }
 
     /**
-     *
+     * Mémorise l'affichage
      */
     @FXML
     void ajouteMemoire(ActionEvent event) {
         memoire = affichage.getText();
     }
     /**
-     *
+     * Ajout l'élément de la memoire de la mémoire dans l'affichage
      */
     @FXML
     void retourneMemoire(ActionEvent event) {
@@ -311,13 +317,7 @@ public class controlFX {
             expression.setExpressionString(affichage.getText());
             if (Double.isNaN(expression.calculate())) d.getCalculInvalide();
             else {
-                /**
-                 *
-                 */
                 String tempExpression = affichage.getText();
-                /**
-                 *
-                 */
                 String tempCalcul = Double.toString(expression.calculate());
                 addHistorique(tempExpression, tempCalcul);
                 affichage.setText(Double.toString(expression.calculate()));
@@ -360,9 +360,7 @@ public class controlFX {
     @FXML
     void fonctionMenu(ContextMenuEvent event) {
         int index = fonctions.getSelectionModel().getSelectedIndex();
-        /**
-         *
-         */
+
         ContextMenu contextMenu = new ContextMenu();
         MenuItem ajouter = new MenuItem("ajouter");
         MenuItem effacer = new MenuItem("effacer");
