@@ -148,7 +148,7 @@ public class controlFX {
         String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
         if (checkValidKey(keyName)) {
 
-            if (findButton(keyName).getScaleX() != 0.80) {
+            if (findButton(keyName).getScaleX() != 0.80)
                 changeButtonScale(findButton(keyName), 0.80);
 
                 switch (keyName) {
@@ -156,7 +156,7 @@ public class controlFX {
                     case "DELETE" -> delete(new ActionEvent());
                     case "=" -> calcul(new ActionEvent());
                     default -> afficheTexte(e.getText());
-                }
+
             }
         }
     }
