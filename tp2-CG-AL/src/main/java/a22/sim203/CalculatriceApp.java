@@ -19,14 +19,15 @@ public class CalculatriceApp extends Application {
      */
     public void start(Stage primaryStage) throws Exception {
 
-        //
+        //implement le fichier Fxml et l'instancie entant que root
         FXMLLoader fxmlLoader = new FXMLLoader();
         Parent root = fxmlLoader.load(this.getClass().getResourceAsStream("calc.fxml"));
 
+        //créé la scene
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
 
-        //
+        //definite les dimensions de la scene
         primaryStage.setMinWidth(1050);
         primaryStage.setMinHeight(500);
         primaryStage.show();

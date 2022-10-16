@@ -17,7 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * Class contrôleur des composants FX pour le Tp2
+ * @author Christophe Guerin Adam Lidam
+ * @version 1.0
+ */
 public class controlFX {
 
     /**
@@ -113,8 +117,10 @@ public class controlFX {
      */
     private void afficheTexte(String texte) {
         affichage.setTextFill(Color.DARKGREEN);
+        //Change le texte d'origine pour le texte a ajouter
         if (affichage.getText().equals("Affichage")) {
             affichage.setText(texte);
+            //rajoute le texte a l'affichage
         } else {
             String temp = affichage.getText();
             affichage.setText(temp + texte);
@@ -129,8 +135,10 @@ public class controlFX {
         if (!Objects.equals(affichage.getText(), "Affichage")) {
             affichage.setTextFill(Color.DARKGREEN);
             try {
+                //essaye de convertir l'affichage en double -/-> catch
                 double doubleAffichage = Double.parseDouble(affichage.getText());
                 affichage.setText("-" + doubleAffichage);
+                //catch une exception si l'on ne peut pas convertir en double
             } catch (NumberFormatException e) {
                 affichage.setText(affichage.getText() + "-");
             }
@@ -142,15 +150,16 @@ public class controlFX {
      *
      * @param e l'évènement de la touche appuyée
      */
-
-
     private void keyPressedEvent(KeyEvent e) {
+        //choisit le bon nom pour la touche
         String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
         if (checkValidKey(keyName)) {
 
+            //empêche la disparition des boutons si l'on garde la touche enfoncée
             if (findButton(keyName).getScaleX() != 0.80)
                 changeButtonScale(findButton(keyName), 0.80);
 
+                //active le bouton correspondant à la touche
                 switch (keyName) {
                     case "BACK_SPACE" -> erase((new ActionEvent()));
                     case "DELETE" -> delete(new ActionEvent());
@@ -167,8 +176,10 @@ public class controlFX {
      * @param e l'événement de la touche relâchée
      */
     private void keyReleasedEvent(KeyEvent e) {
+        //choisit le bon nom pour la touche
         String keyName = Objects.equals(e.getText(), "") ? e.getCode().toString() : e.getText();
 
+        //agrandie le bouton pour le ramener à sa taille originale
         if (checkValidKey(keyName)) {
             changeButtonScale(findButton(keyName), 1.25);
         }
@@ -179,11 +190,15 @@ public class controlFX {
      * Ajoute le handle pour changement de taille sur l'appuie et le relâchement des boutons du a un click
      */
     private void addButtonPressReleaseListener() {
+        //ajout le handler à tous les boutons
         for (Button button : buttons) {
             if (!button.getText().equals("no FX"))
+                //ajout le pressed property au bouton
                 button.pressedProperty().addListener((observable, wasPressed, pressed) -> {
+                    //lors que le bouton est clicker
                     if (pressed) {
                         changeButtonScale(button, 0.80);
+                        //lorsqu'il est relâché
                     } else changeButtonScale(button, 1.25);
                 });
         }
@@ -207,7 +222,9 @@ public class controlFX {
      */
     private Button findButton(String text) {
         Button buttonReturn = null;
+        //parcours la liste de boutons
         for (Button button : buttons) {
+            //trouve le boutons rechercher
             if (text.equals(button.getId())) {
                 buttonReturn = button;
                 break;
@@ -239,17 +256,25 @@ public class controlFX {
      */
     @FXML
     void sqrt(ActionEvent event) {
+        //crée la fonction de racine carrée conforme à la class Function
         Function function = new Function("f(x)=sqrt(x)");
         try {
+            //essaye de convertir l'affichage en double -/-> catch
             double value = Double.parseDouble(affichage.getText());
             double calcul = function.calculate(value);
+            //verifie que la valeur est Reel
             if (Double.isNaN(calcul)) d.getCalculInvalide();
             else {
+                //affiche le resultat
                 affichage.setText(String.valueOf(calcul));
                 affichage.setTextFill(Color.DARKGREEN);
+
+                //ajoute la valeur dans l'historique
                 historique.getItems().add("sqrt(" + (int) value + ")=" + calcul);
             }
+            //catch une exception si l'on ne peut pas convertir en double
         } catch (NumberFormatException e) {
+            //affiche le dialogue d'un calcul invalide
             d.getCalculInvalide();
         }
     }
@@ -259,17 +284,24 @@ public class controlFX {
      */
     @FXML
     void exp(ActionEvent event) {
+        //créé la fonction d'exposant conforme a la Class Function
         Function function = new Function("f(x)=exp(x)");
         try {
+            //essaye de convertir l'affichage en double -/-> catch
             double value = Double.parseDouble(affichage.getText());
             double calcul = function.calculate(value);
             if (Double.isNaN(calcul)) d.getCalculInvalide();
             else {
+                //affiche le resultat
                 affichage.setText(String.valueOf(calcul));
                 affichage.setTextFill(Color.DARKGREEN);
+
+                //ajoute la valeur dans l'historique
                 historique.getItems().add("exp(" + (int) value + ")=" + calcul);
             }
+            //catch une exception si l'on ne peut pas convertir en double
         } catch (NumberFormatException e) {
+            //affiche le dialogue d'un calcul invalide
             d.getCalculInvalide();
         }
     }
@@ -281,12 +313,16 @@ public class controlFX {
      */
     @FXML
     void calculerBoutonFx(ActionEvent event) {
+        //si le mode pour la modificaton de fonction est activé, ajoute la fonction au bouton sélectionné
         if (modeChangementFonction.isSelected()) {
             String newText = (String) fonctions.getSelectionModel().getSelectedItem();
             ((Button) (event.getSource())).setText(newText);
+            //calcule la fonction sélectionnée
         } else {
             String buttonText = ((Button) (event.getSource())).getText();
+            //vérifie que le bouton sélectionné est valide
             if (!buttonText.equals("no FX")) {
+                //calcule
                 calculateAndShow(new Function("f(x)=" + buttonText));
             }
         }
@@ -300,8 +336,10 @@ public class controlFX {
     @FXML
     void addTextAffichage(ActionEvent event) {
         affichage.setTextFill(Color.DARKGREEN);
+        //change le texte d'affichage pour la fonction
         if (affichage.getText().equals("Affichage")) {
             affichage.setText(((Button) event.getSource()).getText());
+            //ajoute la fonction à l'affichage
         } else {
             String temp = affichage.getText();
             affichage.setText(temp + ((Button) event.getSource()).getText());
@@ -321,10 +359,12 @@ public class controlFX {
      */
     @FXML
     void retourneMemoire(ActionEvent event) {
+        //change le texte d'affichage pour la mémoire
         if (affichage.getText().equals("Affichage")) {
             affichage.setTextFill(Color.DARKGREEN);
             affichage.setText(memoire);
         } else {
+            //ajoute la mémoire à l'affichage
             affichage.setTextFill(Color.DARKGREEN);
             String temp = affichage.getText();
             affichage.setText(temp + memoire);
@@ -332,15 +372,21 @@ public class controlFX {
     }
 
     /**
-     *
+     * Calcule l'expression dans l'affichage
      */
     @FXML
     void calcul(ActionEvent event) {
+        //vérifie que l'affichage à calculer n'est pas l'affichage original
         if (!affichage.getText().equals("Affichage")) {
+
+            //créé l'expression à calculer
             Expression expression = new Expression();
             expression.setExpressionString(affichage.getText());
+            //vérifie que le résultat est réel
             if (Double.isNaN(expression.calculate())) d.getCalculInvalide();
             else {
+
+                //affiche le résultat et l'ajoute à l'historique
                 String tempExpression = affichage.getText();
                 String tempCalcul = Double.toString(expression.calculate());
                 addHistorique(tempExpression, tempCalcul);
@@ -351,15 +397,18 @@ public class controlFX {
     }
 
     /**
-     *
+     * Efface un character de l'affichage
      */
     @FXML
     void erase(ActionEvent event) {
+        //vérifie que l'affichage n'est pas vide
         assert affichage.getText() != null;
         String s = affichage.getText();
+        //reinitialise le texte d'affichage original si la longueur après l'effacement est 0
         if (s.length() == 1) {
             affichage.setText("Affichage");
             affichage.setTextFill(Color.WHITE);
+            //efface un seul character
         } else if (!s.equals("Affichage")) {
             affichage.setText(s.substring(0, s.length() - 1));
             affichage.setTextFill(Color.DARKGREEN);
@@ -367,86 +416,110 @@ public class controlFX {
     }
 
     /**
-     *
+     * Efface l'entièreté de l'affichage
      */
     @FXML
     void delete(ActionEvent event) {
+        //reinitialise le texte original
         affichage.setText("Affichage");
         affichage.setTextFill(Color.WHITE);
     }
 
     /**
-     *
+     * Ajoute l'expression et le resultant a l'historique
+     * @param expression la fonction
+     * @param calcul le calcule
      */
     private void addHistorique(String expression, String calcul) {
         historique.getItems().add(expression + " = " + calcul);
     }
 
     /**
-     *
+     *  Créé le menu et ajoute les handle a chaque menuitem
      */
     @FXML
     void fonctionMenu(ContextMenuEvent event) {
         int index = fonctions.getSelectionModel().getSelectedIndex();
 
+        //inistantie les menuItems
         ContextMenu contextMenu = new ContextMenu();
         MenuItem ajouter = new MenuItem("ajouter");
         MenuItem effacer = new MenuItem("effacer");
         MenuItem modifier = new MenuItem("modifier");
 
+        //set on action pour le menu item ajouter
         ajouter.setOnAction(e -> {
+            //appelle le dialogue d'ajout
             String input = d.getAjouterFonction();
 
+            //verifie que la fonction existe
             if (Double.isNaN(stringToFunction(input).calculate(10))) d.getFonctionInvalide();
             else fonctions.getItems().add(index, stringToFunction(input).getFunctionExpressionString());
         });
-
+        //set on action pour le menu item effacer
         effacer.setOnAction(e ->
                 fonctions.getItems().remove(index)
         );
-
+        //set on action pour le menu item modifier
         modifier.setOnAction(e -> {
+            //appelle le dialogue de modification
             String input = d.getModifierFonction(fonctions.getItems().get(index).toString());
 
+            //verifie que la fonction existe
             if (Double.isNaN(stringToFunction(input).calculate(10))) d.getFonctionInvalide();
             else fonctions.getItems().set(index, stringToFunction(input).getFunctionExpressionString());
         });
 
+        //ajoute les menuItems dans le menu contexte menu
         contextMenu.getItems().addAll(ajouter, effacer, modifier);
         contextMenu.show(fonctions, event.getScreenX(), event.getScreenY());
     }
 
     /**
-     *
+     * Crée une fonction à partir d'une String
+     * @param s la string a changer en fonction
      */
     private Function stringToFunction(String s) {
         return new Function("f(x)=" + s);
     }
 
     /**
-     *
+     * Call l'alert APropos du menu
      */
     @FXML
     void menuAlert(ActionEvent event) {
         d.getAPropos();
     }
 
+
+    /**
+     * Effectue la fonction personnalisée et l'ajoute a l'historique
+     * @param function fonction personnalisée à effectuer
+     * @return le resultat du calcul
+     */
     public double calculateAndShow(Function function) {
         double value;
         double calcul = Double.NaN;
         try {
+            //essaye de convertir l'affichage en double -/-> catch
             value = Double.parseDouble(affichage.getText());
             calcul = (function.calculate(value));
+            //verifie que le resulat est reel
             if (!Double.isNaN(calcul)) {
+                //affiche le resultat
                 affichage.setText(String.valueOf(calcul));
                 affichage.setTextFill(Color.DARKGREEN);
+                //ajoute la fonction et son resultat dans l'historique
                 CharSequence old = "x";
                 CharSequence replacement = String.valueOf((int) value);
                 historique.getItems().add(function.getFunctionExpressionString().replace(old, replacement) + "=" + calcul);
             }
+            //catch une exception si l'on ne peut pas convertir en double
         } catch (NumberFormatException exception) {
             d.getCalculInvalide();
         }
+
+        //retourne le resultat
         return calcul;
     }
 
