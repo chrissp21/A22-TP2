@@ -12,11 +12,10 @@ import javafx.stage.Stage;
  * @version 1.0
  */
 public class CalculatriceApp extends Application {
-    @Override
-
     /**
      * Lance et crée le Stage à partir du fichier FXML
      */
+    @Override
     public void start(Stage primaryStage) throws Exception {
 
         //implement le fichier Fxml et l'instancie entant que root
